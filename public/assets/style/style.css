@@ -1,0 +1,10 @@
+.content-wrapper {
+  padding-left: 20%;
+}
+
+.full-height {
+  z-index: 1000;
+  height: 100%;
+  position: absolute;
+  width: 354px;
+}

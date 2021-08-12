@@ -1,26 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, HashRouter, Router } from 'react-router-dom';
+import LeftMenu from './modules/components/left-menu';
+import Routes from './modules/router/routing';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-wrapper">
+      <HashRouter>
+        <LeftMenu />
+        <div className="page-wrapper" style={{position: 'relative'}}>
+          <Routes />
+        </div>
+      </HashRouter>
     </div>
-  );
+  )
 }
 
 export default App;
