@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Modal } from '../modal';
 import { AccountCircle } from '@material-ui/icons';
-import { UserModel, ClientSocket, RoomModel } from '../../../script-model';
+import { UserModel, ClientSocket, RoomModel, Menu } from '../../../script-model';
 
 interface ChatroomStates {
   roomToken: string,
@@ -35,7 +35,7 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
       roomDataLoaded: false,
       roomMemberList: [],
       historyMessageList: [],
-      messageToSend: null
+      messageToSend: ''
     }
   }
 
@@ -66,6 +66,11 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     });
   }
 
+
+  componentWillUnmount(): void {
+    // remove room socket listeners
+  }
+
   registerRoomSocketListeners = (): void => {
     ClientSocket.receiveRoomJoinEvent(this.receivePropsFromSocketEvent);
     ClientSocket.receiveRoomLeaveEvent(this.receivePropsFromSocketEvent);
@@ -83,7 +88,7 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
           this.broadcastJoinEvent();
           var promise = new Promise((resolve: Function) => {
             this.initRoomData(resolve);
-          })
+          });
           promise.then(() => {
             this.registerRoomSocketListeners();
           });
@@ -96,11 +101,17 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
   }
 
   broadcastJoinEvent = (): void => {
-    ClientSocket.joinHandler({
-      roomToken: this.state.roomToken,
-      name: this.state.nameOnDialog,
-      callback: this.receivePropsFromSocketEvent
-    })
+    // broadcast join event only if it's the first-time join
+    if (!Menu.roomsOnList.get(this.state.roomToken)) {
+      console.log('join room')
+      ClientSocket.roomJoinHandler({
+        roomToken: this.state.roomToken,
+        name: this.state.nameOnDialog,
+        callback: this.receivePropsFromSocketEvent
+      })
+      // set the room as visited
+      Menu.roomsOnList.set(this.state.roomToken, true);
+    }
   }
 
   // fetch chatroom data
@@ -130,8 +141,11 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
 
   loadRoomHistory = (): Promise<any> => {
     var promise = new Promise((resolve: Function) => {
-      // TODO
-      resolve([]);
+      RoomModel.getRoomHistory({ token: this.state.roomToken }, (res: any) => {
+        if (res.CODE === '200') {
+          resolve(res.params.history);
+        }
+      })
     });
     return promise;
   }
@@ -141,30 +155,54 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     console.log('receiving data: ', res)
     switch (res.event) {
       case 'join':
+        let name = (res.data.member === this.state.nameOnDialog) ? 'You' : res.data.member;
+        this.setState((prevState: ChatroomStates) => {
+          return {
+            ...prevState,
+            historyMessageList: [...prevState.historyMessageList, {
+              type: 'event',
+              message: `${name} ${name === 'You' ? 'have' : 'has'} joined the room.`
+            }]
+          };
+        });
         break;
       case 'leave':
+        this.setState((prevState: ChatroomStates) => {
+          return {
+            ...prevState,
+            historyMessageList: [...prevState.historyMessageList, {
+              type: 'event',
+              message: `${res.data.member} has left the room.`
+            }]
+          };
+        });
         break;
       case 'message':
         this.setState((prevState: ChatroomStates) => {
           return {
             ...prevState,
+            messageToSend: '',
             historyMessageList: [...prevState.historyMessageList, {
+              type: 'message',
               member: res.data.member,
               message: res.data.text
             }]
-          }
-        })
+          };
+        });
         break;
       default: break;
     }
   }
 
-  handleMessageSend = (): void => {
-    ClientSocket.roomMessageHandler({
-      roomToken: this.state.roomToken,
-      member: this.state.nameOnDialog,
-      message: this.state.messageToSend,
-    });
+  handleMessageSend = (e: any): void => {
+    if (this.state.messageToSend) {
+      ClientSocket.roomMessageHandler({
+        roomToken: this.state.roomToken,
+        type: 'message',
+        member: this.state.nameOnDialog,
+        message: this.state.messageToSend,
+      });
+    }
   }
 
   // update name dialog 
@@ -194,12 +232,20 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
           <div className="chatbox" style={{display:'inline-block', position:'absolute', height:'100%', width:'60%'}}>
             <div className="chatbox-container" style={{height:'90vh'}}>
               {this.state.historyMessageList.map((msgObj: any) => {
-                return (<div>{msgObj.member}: {msgObj.message}</div>)
+
+                switch (msgObj.type) {
+                  case 'message':
+                    return (<div>{msgObj.member}: {msgObj.message}</div>);
+                  case 'event':
+                    return (<div>{msgObj.message}</div>);
+                  default:
+                    return (<div></div>);
+                }     
               })}
             </div>
             <div className="chatbox-form-contaienr">
               <Paper component="form" style={{width:'735px', marginLeft:'108px', display:'flex', alignItems:'center'}}>
-                <InputBase placeholder="Say something..." inputProps={{ 'aria-label': 'Say something...' }} style={{width:'85%'}} onChange={this.messageOnUpdate} />
+                <InputBase placeholder="Say something..." inputProps={{ 'aria-label': 'Say something...' }} style={{width:'85%'}} value={this.state.messageToSend} onChange={this.messageOnUpdate} />
                 <Divider orientation="vertical" style={{height:'25px'}} />
                 <IconButton color="primary" aria-label="directions" onClick={this.handleMessageSend}>
                   <SendIcon />

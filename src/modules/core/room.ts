@@ -16,6 +16,10 @@ export class RoomModel {
     RoomModel._call('/room/members', parameters, cb);
   }
 
+  public static getRoomHistory(parameters: any, cb: Function): void {
+    RoomModel._call('/room/history', parameters, cb);
+  }
+
   private static _call(url: string, parameters: any, cb: Function): void {
     var session: UserSessionType = Session.getUserSession();
     var params = {...session, ...parameters};

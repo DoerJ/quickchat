@@ -1,8 +1,9 @@
 import { Button, Snackbar, TextField } from '@material-ui/core';
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
-import { RoomModel } from '../../../script-model';
+import { EventService, RoomModel } from '../../../script-model';
 import { Modal } from '../modal';
+import { MenuItem } from '../../core/menu';
 
 interface JoinChatroomStates {
   isValidRoomCode: boolean,
@@ -38,7 +39,17 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
     RoomModel.joinExistingRoom(params, (response: any) => {
       // navigate to chatroom
       if (response.CODE === '200') {
-
+        console.log('response: ', response)
+        let roomToken = response.params.roomToken;
+        let roomName = response.params.roomName;
+        // generate a menu item and append to room list
+        let room: MenuItem = {
+          id: roomToken,
+          type: 'component',
+          label: roomName,
+          route: '/chatroom/' + roomToken
+        }
+        EventService.newRoomAddedToList.next(room);
       }
       // throw out error
       else {

@@ -31,11 +31,11 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
   }
 
   modalOnClose = (): void => {
-    this.setState({openAlertModal: false});
+    this.setState({ openAlertModal: false });
   }
 
   handleChatroomNameInput = (e: any): void => {
-    this.setState({chatroomName: e.target.value})
+    this.setState({ chatroomName: e.target.value })
   }
 
   createNewChatroom = (): void => {
@@ -46,7 +46,6 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
     RoomModel.createNewRoom(params, (response: any) => {
       var code;
       if (response.CODE === '200') {
-        console.log('room created')
         let roomToken = response.params.roomToken;
         code = roomToken;
         // generate a menu item and append to room list

@@ -10,7 +10,9 @@ export class Menu {
   constructor() { }
 
   // store newly added room tokens, keep track of rooms on list
-  public static roomsOnList: Set<string> = new Set();
+  // the key is the room token number, and the value tells whether the room has ever been joined 
+  // for broadcasting join event
+  public static roomsOnList: Map<string, boolean> = new Map();
 
   public static menuList: MenuItem[] = [
     {
@@ -53,7 +55,7 @@ export class Menu {
       }
     });
     // store the room token for the rerender of left-menu
-    Menu.roomsOnList.add(room.id);
+    Menu.roomsOnList.set(room.id, false);
   }
 
 }

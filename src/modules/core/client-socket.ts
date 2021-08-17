@@ -16,31 +16,33 @@ export class ClientSocket {
       console.log('received socket error: ', error);
     })
 
-    // join event 
-    ClientSocket.socket.on('join', (data: any) => {
-      data.callback({
-        event: 'join', 
-        data: data.member
-      });
-    });
+    // // join event 
+    // ClientSocket.socket.on('join', (data: any) => {
+    //   data.callback({
+    //     event: 'join', 
+    //     data: data.member
+    //   });
+    // });
 
-    // leave event 
-    ClientSocket.socket.on('leave', (data: any) => {
-      data.callback({
-        event: 'leave', 
-        data: data.member 
-      });
-    })
+    // // leave event 
+    // ClientSocket.socket.on('leave', (data: any) => {
+    //   data.callback({
+    //     event: 'leave', 
+    //     data: data.member 
+    //   });
+    // })
 
-    // message event 
-    ClientSocket.socket.on('message', (data: any, cb: Function) => {
-      // TODO
-    });
+    // // message event 
+    // ClientSocket.socket.on('message', (data: any, cb: Function) => {
+    //   // TODO
+    // });
   }
 
   // listen to message event in chatroom 
   public static receiveRoomMessageEvent = (cb: Function) => {
+    console.log('listening to room message event...')
     ClientSocket.socket.on('room-message', (data: any) => {
+      console.log('receiving room message...')
       cb({
         event: 'message',
         data: {
@@ -92,6 +94,10 @@ export class ClientSocket {
   public static roomMessageHandler(data: any): void {
     console.log('emit room message...')
     ClientSocket.socket.emit('room-message', data);
+  }
+
+  public static roomJoinHandler(data: any): void {
+    ClientSocket.socket.emit('room-join', data);
   }
 
 }   

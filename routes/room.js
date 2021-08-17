@@ -19,6 +19,7 @@ router.all('/join', function(req, res) {
   var code = req.body.roomCode;
   var client = ClientHandler.getClient(req.body.userid);
   var room = ChatroomsHandler.retrieveRoom(code);
+  var data = {};
   var message = {};
   var code;
   // if room exists
@@ -31,6 +32,8 @@ router.all('/join', function(req, res) {
       code = '200';
       message.type = 'success';
       message.text = 'You have joined the room!';
+      data.roomToken = code;
+      data.roomName = room.roomName;
     }
     // if client has joined this room before
     else {
@@ -45,9 +48,10 @@ router.all('/join', function(req, res) {
     message.type = 'error';
     message.text = 'The room doesn\'t exist.'
   }
+  data.message = message;
   res.send({
     CODE: code,
-    params: { message: message }
+    params: data
   });
 });
 
@@ -99,6 +103,22 @@ router.post('/members', function(req, res) {
     res.send({
       CODE: '200',
       params: { members: list }
+    });
+  }
+  else {
+    res.send({ CODE: '500' });
+  }
+});
+
+// fetch room history 
+router.post('/history', function(req, res) {
+  var token = req.body.token;
+  var room = ChatroomsHandler.retrieveRoom(token);
+  var history = room.getHistoryMessages();
+  if (history) {
+    res.send({
+      CODE: '200',
+      params: { history: history }
     });
   }
   else {

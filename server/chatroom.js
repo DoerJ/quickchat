@@ -28,6 +28,10 @@ Chatroom.prototype.pushMessageToHistory = function(msgObj) {
   this.historyMessages.push(msgObj);
 }
 
+Chatroom.prototype.getHistoryMessages = function() {
+  return [...this.historyMessages];
+}
+
 var ChatroomsHandler = function() { }
 
 // store all chatroom objects

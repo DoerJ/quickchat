@@ -38,7 +38,8 @@ io.on('connection', client => {
     joinHandler, 
     leaveHandler, 
     messageHandler, 
-    roomMessageHandler
+    roomMessageHandler,
+    roomJoinHandler
   } = initializeHandlers(client, io);
   // register events for connected user 
   client.on('register', registrationHandler);
@@ -47,7 +48,9 @@ io.on('connection', client => {
   // message event on left menu
   client.on('message', messageHandler);
   // message event in chatroom
-  client.on('room-message', roomMessageHandler)
+  client.on('room-message', roomMessageHandler);
+  // join event in chatroom 
+  client.on('room-join', roomJoinHandler);
 
   client.on('disconnect', () => { });
 
