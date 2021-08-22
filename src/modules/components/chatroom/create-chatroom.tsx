@@ -44,10 +44,9 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
       chatroomName: this.state.chatroomName
     }
     RoomModel.createNewRoom(params, (response: any) => {
-      var code;
+      var roomToken;
       if (response.CODE === '200') {
-        let roomToken = response.params.roomToken;
-        code = roomToken;
+        roomToken = response.params.roomToken;
         // generate a menu item and append to room list
         let room: MenuItem = {
           id: roomToken,
@@ -58,11 +57,11 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
         EventService.newRoomAddedToList.next(room);
       }
       self.setState({
-        chatroomToken: code || null,
-        roomCreateSuccess: !!code,
+        chatroomToken: roomToken || null,
+        roomCreateSuccess: !!roomToken,
         openAlertModal: true,
         response: response
-      })
+      });
     });
   }
 

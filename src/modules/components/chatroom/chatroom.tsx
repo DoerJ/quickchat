@@ -45,7 +45,6 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
   componentDidMount(): void {
     // validate member name for the room 
     UserModel.retrieveMemberNameForRoom({ token: this.state.roomToken }, (res: any) => {
-      console.log('retrieve member name: ', res)
       if (res.CODE === '200') {
         this.setState({ nameOnDialog: res.params.name }, () => {
           // TODO: broadcast on condiiton
@@ -84,13 +83,13 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     }, (res: any) => {
       if (res.CODE === '200') {
         this.setState({ openNameDialog: false }, () => {
-          // broadcast join event
-          this.broadcastJoinEvent();
           var promise = new Promise((resolve: Function) => {
             this.initRoomData(resolve);
           });
           promise.then(() => {
             this.registerRoomSocketListeners();
+            // broadcast join event
+            this.broadcastJoinEvent();
           });
         });    
       }
@@ -105,9 +104,9 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     if (!Menu.roomsOnList.get(this.state.roomToken)) {
       console.log('join room')
       ClientSocket.roomJoinHandler({
+        type: 'join-event',
         roomToken: this.state.roomToken,
-        name: this.state.nameOnDialog,
-        callback: this.receivePropsFromSocketEvent
+        name: this.state.nameOnDialog
       })
       // set the room as visited
       Menu.roomsOnList.set(this.state.roomToken, true);
@@ -155,13 +154,12 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     console.log('receiving data: ', res)
     switch (res.event) {
       case 'join':
-        let name = (res.data.member === this.state.nameOnDialog) ? 'You' : res.data.member;
         this.setState((prevState: ChatroomStates) => {
           return {
             ...prevState,
             historyMessageList: [...prevState.historyMessageList, {
-              type: 'event',
-              message: `${name} ${name === 'You' ? 'have' : 'has'} joined the room.`
+              type: 'join-event',
+              member: res.data.member
             }]
           };
         });
@@ -236,8 +234,10 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
                 switch (msgObj.type) {
                   case 'message':
                     return (<div>{msgObj.member}: {msgObj.message}</div>);
-                  case 'event':
-                    return (<div>{msgObj.message}</div>);
+                  case 'join-event':
+                    return (<div>{msgObj.member === this.state.nameOnDialog ? 'You have' : msgObj.member + ' has'} joined the room.</div>);
+                  case 'leave-event':
+                    return (<div>{msgObj.member} has left the room.</div>);
                   default:
                     return (<div></div>);
                 }     

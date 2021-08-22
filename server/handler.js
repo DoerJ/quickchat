@@ -13,7 +13,7 @@ module.exports = (socket, io) => {
   var leaveHandler = () => {
 
   }
-  
+
   var messageHandler = (params) => {
 
   }
@@ -34,13 +34,16 @@ module.exports = (socket, io) => {
   }
 
   var roomJoinHandler = (params) => {
-    console.log('joining socket: ', params)
     // join the socket channel of a specific room 
     socket.join(params.roomToken);
+    // push join event to chatroom history stack 
+    ChatroomsHandler.retrieveRoom(params.roomToken).pushMessageToHistory({
+      type: params.type,
+      member: params.name
+    });
     // broadcast join event to all the room members
-    io.in(params.roomToken).emit('join', {
-      memeber: params.name,
-      callback: params.callback
+    io.in(params.roomToken).emit('room-join', {
+      member: params.name
     });
   }
 

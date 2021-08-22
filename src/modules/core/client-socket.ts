@@ -59,7 +59,7 @@ export class ClientSocket {
       console.log('receiving data: ', data)
       cb({
         event: 'join',
-        data: { member: data.member }
+        data: data
       });
     });
   }
@@ -70,7 +70,7 @@ export class ClientSocket {
       console.log('receiving data: ', data)
       cb({
         event: 'leave',
-        data: { member: data.member }
+        data: data
       });
     });
   }
@@ -92,7 +92,6 @@ export class ClientSocket {
   }
 
   public static roomMessageHandler(data: any): void {
-    console.log('emit room message...')
     ClientSocket.socket.emit('room-message', data);
   }
 

@@ -4,19 +4,24 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { EventService, RoomModel } from '../../../script-model';
 import { Modal } from '../modal';
 import { MenuItem } from '../../core/menu';
+import { Redirect } from 'react-router-dom';
 
 interface JoinChatroomStates {
+  roomJoinSuccess: boolean
   isValidRoomCode: boolean,
+  chatroomToken: string | null,
   roomCode: string | null,
   openAlertModal: boolean,
-  response: any
+  response: any,
 }
 
 export class JoinChatroomComponent extends React.Component<{}, JoinChatroomStates> {
   constructor(props: any) {
     super(props);
     this.state = {
+      roomJoinSuccess: false,
       isValidRoomCode: true,
+      chatroomToken: null,
       roomCode: null,
       openAlertModal: false,
       response: {}
@@ -37,14 +42,15 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
       roomCode: self.state.roomCode
     }
     RoomModel.joinExistingRoom(params, (response: any) => {
+      var roomToken;
       // navigate to chatroom
       if (response.CODE === '200') {
-        console.log('response: ', response)
-        let roomToken = response.params.roomToken;
+        roomToken = response.params.roomToken;
+        console.log('chatroom token: ', roomToken)
         let roomName = response.params.roomName;
         // generate a menu item and append to room list
         let room: MenuItem = {
-          id: roomToken,
+          id: roomToken,  
           type: 'component',
           label: roomName,
           route: '/chatroom/' + roomToken
@@ -56,6 +62,8 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
         // error handler
       }
       self.setState({
+        chatroomToken: roomToken || null,
+        roomJoinSuccess: !!roomToken,
         openAlertModal: true,
         response: response
       })
@@ -63,7 +71,15 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
   }
 
   render() {
-    return (
+    return (this.state.roomJoinSuccess ? (
+      <Redirect to={{
+        pathname: '/chatroom/' + this.state.chatroomToken,
+        state: {
+          roomToken: this.state.chatroomToken,
+          modal: this.state.response
+        }
+      }} />
+    ) : (
       <div className="content-wrapper">
         <TextField
           id="outlined-search"
@@ -79,6 +95,7 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
         }
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose} />
       </div>
-    );
+    ));
   }
+  
 }

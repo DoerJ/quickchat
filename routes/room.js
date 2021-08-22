@@ -16,11 +16,10 @@ function generateRoomToken() {
 
 // handle join room request
 router.all('/join', function(req, res) {
-  var code = req.body.roomCode;
+  var roomCode = req.body.roomCode;
   var client = ClientHandler.getClient(req.body.userid);
-  var room = ChatroomsHandler.retrieveRoom(code);
-  var data = {};
-  var message = {};
+  var room = ChatroomsHandler.retrieveRoom(roomCode);
+  var data = {}, message = {};
   var code;
   // if room exists
   if (room) {
@@ -32,7 +31,7 @@ router.all('/join', function(req, res) {
       code = '200';
       message.type = 'success';
       message.text = 'You have joined the room!';
-      data.roomToken = code;
+      data.roomToken = roomCode;
       data.roomName = room.roomName;
     }
     // if client has joined this room before
