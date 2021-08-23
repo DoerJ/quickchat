@@ -17,6 +17,7 @@ import StarBorder from '@material-ui/icons/StarBorder';
 import { Menu } from '../../script-model';
 import { MenuItem } from '../core/menu';
 import { EventService } from '../../script-model';
+import { menuIcons } from '../ui/icons';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -89,6 +90,7 @@ function LeftMenu() {
       if (item.type === 'folder') {
         let folderMenuItem = (
           <ListItem key={item.id} button onClick={() => handleClick(item)}>
+            {menuIcons[item.icon]}
             <ListItemText primary={item.label} />{open[item.id] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         );
@@ -98,6 +100,7 @@ function LeftMenu() {
               {item.children.map((subitem: any) => (
                 <Link to={subitem.route} className={classes.link}>
                   <ListItem key={subitem.id} button className={classes.nested} selected={selectedIndex === subitem.id} onClick={() => handleClick(subitem)}>
+                    {menuIcons[subitem.icon]}
                     <ListItemText primary={subitem.label} />
                   </ListItem>
                 </Link>
@@ -111,6 +114,7 @@ function LeftMenu() {
         menuList.push(
           <Link to={item.route} className={classes.link}>
             <ListItem key={item.id} selected={selectedIndex === item.id} button onClick={() => handleClick(item)}>
+              {menuIcons[item.icon]}
               <ListItemText primary={item.label} />
             </ListItem>
           </Link>

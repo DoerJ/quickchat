@@ -4,6 +4,7 @@ export interface MenuItem {
   label: string,
   route?: string,
   children?: MenuItem[]
+  icon?: string
 }
 
 export class Menu {
@@ -19,24 +20,28 @@ export class Menu {
       id: 'dashboard',
       type: 'component',
       label: 'Dashboard',
-      route: '/dashboard'
+      route: '/dashboard',
+      icon: 'home'
     },
     {
       id: 'chat-room',
       type: 'folder',
       label: 'Chat room',
+      icon: 'chatroom',
       children: [
         {
           id: 'create-new-room',
           type: 'component',
           label: 'Create a new room',
-          route: '/new-chatroom'
+          route: '/new-chatroom',
+          icon: 'create-chatroom'
         },
         {
           id: 'join-room',
           type: 'component',
           label: 'Join a room',
-          route: '/join-chatroom'
+          route: '/join-chatroom',
+          icon: 'join-chatroom'
         }
       ]
     },
@@ -44,7 +49,8 @@ export class Menu {
       id: 'my-rooms',
       type: 'folder',
       label: 'My rooms',
-      children: []
+      children: [],
+      icon: 'my-rooms'
     }
   ];
 
