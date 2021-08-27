@@ -89,9 +89,9 @@ function LeftMenu() {
     Menu.menuList.forEach((item: any) => {
       if (item.type === 'folder') {
         let folderMenuItem = (
-          <ListItem key={item.id} button onClick={() => handleClick(item)}>
+          <ListItem className="left-menu-item-wrapper left-menu-folder" key={item.id} button onClick={() => handleClick(item)}>
             {menuIcons[item.icon]}
-            <ListItemText primary={item.label} />{open[item.id] ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText className="left-menu-label" primary={item.label} />{open[item.id] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         );
         let folderSubmenuItem = (
@@ -99,9 +99,9 @@ function LeftMenu() {
             <List component="div" disablePadding>
               {item.children.map((subitem: any) => (
                 <Link to={subitem.route} className={classes.link}>
-                  <ListItem key={subitem.id} button className={classes.nested} selected={selectedIndex === subitem.id} onClick={() => handleClick(subitem)}>
+                  <ListItem key={subitem.id} button className={`left-menu-item-wrapper ${classes.nested}`} selected={selectedIndex === subitem.id} onClick={() => handleClick(subitem)}>
                     {menuIcons[subitem.icon]}
-                    <ListItemText primary={subitem.label} />
+                    <ListItemText className="left-menu-label" primary={subitem.label} />
                   </ListItem>
                 </Link>
               ))}
@@ -113,9 +113,9 @@ function LeftMenu() {
       else if (item.type === 'component') {
         menuList.push(
           <Link to={item.route} className={classes.link}>
-            <ListItem key={item.id} selected={selectedIndex === item.id} button onClick={() => handleClick(item)}>
+            <ListItem className="left-menu-item-wrapper" key={item.id} selected={selectedIndex === item.id} button onClick={() => handleClick(item)}>
               {menuIcons[item.icon]}
-              <ListItemText primary={item.label} />
+              <ListItemText className="left-menu-label" primary={item.label} />
             </ListItem>
           </Link>
         );
@@ -127,7 +127,7 @@ function LeftMenu() {
 
   const hiddenLeftMenu = (<div></div>);
   var showLeftMenu = (
-    <div className="full-height">
+    <div className="left-menu-wrapper">
       <List component="nav" aria-labelledby="nested-list-subheader" className={classes.root}>
         {menuList}
       </List>

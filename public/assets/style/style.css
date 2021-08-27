@@ -1,10 +1,105 @@
-.content-wrapper {
+.content-wrapper.center-layout {
+  position: absolute;
   padding-left: 20%;
+  margin-top: 40vh;
+  display: flex;
+  align-items: center;
 }
 
-.full-height {
+/* left menu */
+.left-menu-wrapper {
+  padding-top: 219px;
   z-index: 1000;
   height: 100%;
   position: absolute;
-  width: 354px;
+  width: 246px;
+  border: 1px solid #dcdee6;
+  border-width: 0 1px 0 0;
+}
+
+.left-menu-icon-wrapper {
+  width: 64px!important;
+  transform: scale(1.5);
+}
+
+div.left-menu-item-wrapper {
+  height: 73px;
+  margin-left: 9px;
+  width: 94%;
+  border-radius: 4px;
+  color: #9ea5b2;
+}
+
+div.left-menu-item-wrapper.Mui-selected {
+  background-color: #e1f4f3;
+  color: #28a592;
+}
+
+.left-menu-label > span {
+  font-size: 14px;
+}
+
+
+/* create/join pages */
+.enter-room-info-input-wrapper input {
+  min-width: 272px;
+}
+
+button.btn-active {
+  color: #28a592;
+  min-width: 105px;
+  margin-left: 10px;
+  transition: .5s;
+}
+
+button.btn-active:hover {
+  border-radius: 4px;
+  color: #28a592;
+  background-color: #e1f4f3;
+  min-width: 105px;
+  margin-left: 10px;
+}
+
+
+/* dialog */
+.name-dialog-wrapper .MuiPaper-root {
+  width: 394px;
+  height: 210px;
+}
+
+.name-dialog-wrapper .name-dialog {
+  margin: 0 23px;
+  margin-top: 66px;
+}
+
+button.name-dialog-btn {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  color: #28a592;
+}
+
+button.name-dialog-btn:hover {
+  background-color: #e1f4f3;
+}
+
+.name-dialog-icon-wrapper {
+  margin-bottom: 7px;
+  margin-left: 13px;
+  color: #28a592;
+}
+
+.name-dialog-icon-wrapper svg {
+  transform: scale(1.5);
+}
+
+.name-dialog-textfield > label {
+  margin-top: -32px;
+  font-size: 22px;
+  color: black;
+}
+
+#input-with-icon-textfield {
+  padding-bottom: 16px;
+  margin-left: 22px;
+  font-size: 20px;
 }

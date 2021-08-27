@@ -255,17 +255,20 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
           </div>
         </Container>
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose} />
-        <Dialog aria-labelledby="simple-dialog-title" open={this.state.openNameDialog}>
-          <FormControl style={{margin:'23px'}}>
-            <TextField id="input-with-icon-textfield" label="Give yourself a name"
+        <Dialog className="name-dialog-wrapper" aria-labelledby="simple-dialog-title" open={this.state.openNameDialog}>
+          <FormControl className="name-dialog">
+            <TextField 
+              id="input-with-icon-textfield"
+              className="name-dialog-textfield" 
+              label="Your Name in the Room"
               onChange={this.nameOnUpdate}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start"><AccountCircle /></InputAdornment>
+                  <InputAdornment className="name-dialog-icon-wrapper" position="start"><AccountCircle /></InputAdornment>
                 ),
               }}
             />
-            <Button variant="contained" color="primary" style={{width:'100px', marginTop:'10px'}} onClick={this.handleNameSubmit}>Confirm</Button>
+            <Button color="primary" className="name-dialog-btn" style={{width:'100px', marginTop:'16px'}} onClick={this.handleNameSubmit}>Confirm</Button>
           </FormControl>
         </Dialog>
       </div>

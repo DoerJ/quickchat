@@ -52,7 +52,8 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
           id: roomToken,
           type: 'component',
           label: self.state.chatroomName,
-          route: '/chatroom/' + roomToken
+          route: '/chatroom/' + roomToken,
+          icon: 'group'
         }
         EventService.newRoomAddedToList.next(room);
       }
@@ -75,9 +76,9 @@ export class CreateChatroomComponent extends React.Component<{}, CreateChatroomS
         }
       }} />
     ) : (
-      <div className="content-wrapper">
-        <TextField id="outlined-basic" label="Chatroom Name" variant="outlined" onChange={this.handleChatroomNameInput} />
-        {this.state.isValidChatroomName ? (<Button onClick={this.createNewChatroom}>Create</Button>) : (<Button disabled>Create</Button>)}
+      <div className="content-wrapper center-layout">
+        <TextField id="outlined-basic" className="enter-room-info-input-wrapper" label="Room Name" variant="outlined" onChange={this.handleChatroomNameInput} />
+        {this.state.isValidChatroomName ? (<Button className="create-room-btn btn-active" onClick={this.createNewChatroom}>Create</Button>) : (<Button disabled>Create</Button>)}
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose}/>
       </div>
     ));

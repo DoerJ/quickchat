@@ -7,6 +7,6 @@ export class DashboardComponent extends React.Component {
   }
 
   render(): any {
-    return (<div className="content-wrapper">Dashboard component</div>);
+    return (<div className="content-wrapper center-layout">Dashboard component</div>);
   }
 }

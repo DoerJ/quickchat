@@ -19,27 +19,27 @@ export class Menu {
     {
       id: 'dashboard',
       type: 'component',
-      label: 'Dashboard',
+      label: 'Home',
       route: '/dashboard',
       icon: 'home'
     },
     {
       id: 'chat-room',
       type: 'folder',
-      label: 'Chat room',
+      label: 'Chat',
       icon: 'chatroom',
       children: [
         {
           id: 'create-new-room',
           type: 'component',
-          label: 'Create a new room',
+          label: 'Create',
           route: '/new-chatroom',
           icon: 'create-chatroom'
         },
         {
           id: 'join-room',
           type: 'component',
-          label: 'Join a room',
+          label: 'Join',
           route: '/join-chatroom',
           icon: 'join-chatroom'
         }

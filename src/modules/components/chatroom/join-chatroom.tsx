@@ -80,10 +80,11 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
         }
       }} />
     ) : (
-      <div className="content-wrapper">
+      <div className="content-wrapper center-layout">
         <TextField
           id="outlined-search"
-          label="Enter the room code"
+          className="enter-room-info-input-wrapper"
+          label="Enter the Room Code"
           type="search"
           autoComplete="current-password"
           variant="outlined"
@@ -91,7 +92,7 @@ export class JoinChatroomComponent extends React.Component<{}, JoinChatroomState
           onChange={this.handleRoomCodeInput}
         />
         {
-          this.state.isValidRoomCode ? <Button onClick={this.sendJoinRequest}>Join</Button> : <Button disabled>Join</Button>
+          this.state.isValidRoomCode ? <Button className="join-room-btn btn-active" onClick={this.sendJoinRequest}>Join</Button> : <Button disabled>Join</Button>
         }
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose} />
       </div>
