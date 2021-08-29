@@ -7,6 +7,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { Modal } from '../modal';
 import { AccountCircle } from '@material-ui/icons';
 import { UserModel, ClientSocket, RoomModel, Menu } from '../../../script-model';
+import { generateNameCard } from '../../ui/name-card';
 
 interface ChatroomStates {
   roomToken: string,
@@ -17,7 +18,8 @@ interface ChatroomStates {
   roomDataLoaded: boolean,
   roomMemberList: any[],
   historyMessageList: any[],
-  messageToSend: string | null
+  messageToSend: string | null,
+  nameLoaded: boolean
 }
 
 export class ChatroomComponent extends React.Component<any, ChatroomStates> {
@@ -35,7 +37,8 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
       roomDataLoaded: false,
       roomMemberList: [],
       historyMessageList: [],
-      messageToSend: ''
+      messageToSend: '',
+      nameLoaded: false
     }
   }
 
@@ -46,7 +49,10 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     // validate member name for the room 
     UserModel.retrieveMemberNameForRoom({ token: this.state.roomToken }, (res: any) => {
       if (res.CODE === '200') {
-        this.setState({ nameOnDialog: res.params.name }, () => {
+        this.setState({
+          nameOnDialog: res.params.name,
+          nameLoaded: true
+        }, () => {
           // TODO: broadcast on condiiton
           this.broadcastJoinEvent();
           var promise = new Promise((resolve: Function) => {
@@ -82,7 +88,10 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
       memberName: this.state.nameOnDialog
     }, (res: any) => {
       if (res.CODE === '200') {
-        this.setState({ openNameDialog: false }, () => {
+        this.setState({
+          openNameDialog: false,
+          nameLoaded: true
+        }, () => {
           var promise = new Promise((resolve: Function) => {
             this.initRoomData(resolve);
           });
@@ -220,14 +229,21 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
 
   render() {
     return (
-      <div className="content-wrapper">
-        <Container maxWidth="xl" style={{height:'100vh', position:'relative'}}>
-          <div className="member-list" style={{display:'inline-block', position:'relative', height:'100vh', width:'20%'}}>
-            {this.state.roomMemberList.map((name: string) => {
-              return (<div>{name}</div>);
-            })} 
-          </div>
-          <div className="chatbox" style={{display:'inline-block', position:'absolute', height:'100%', width:'60%'}}>
+      <div className="content-wrapper col-layout">                                                                                                                                                                                                         
+        <div className="member-list" style={{display:'inline-block', position:'relative', height:'100vh', width:'20%'}}>
+          {this.state.nameLoaded && (
+            <div className="profile-wrapper">
+              {generateNameCard(this.state.nameOnDialog, 'lg')}
+              <div className="profile-name">
+                <span className="profile-name-label">{this.state.nameOnDialog}</span>
+              </div>
+            </div>
+          )}
+          {this.state.roomMemberList.map((name: string) => {
+            return (<div>{name}</div>);
+          })} 
+        </div>
+        <div className="chatbox" style={{display:'inline-block', position:'absolute', height:'100%', width:'60%'}}>
             <div className="chatbox-container" style={{height:'90vh'}}>
               {this.state.historyMessageList.map((msgObj: any) => {
 
@@ -253,7 +269,6 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
               </Paper>
             </div>
           </div>
-        </Container>
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose} />
         <Dialog className="name-dialog-wrapper" aria-labelledby="simple-dialog-title" open={this.state.openNameDialog}>
           <FormControl className="name-dialog">

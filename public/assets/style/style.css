@@ -103,3 +103,31 @@ button.name-dialog-btn:hover {
   margin-left: 22px;
   font-size: 20px;
 }
+
+/* chatbox */
+.content-wrapper.col-layout {
+  margin-left: 10%;
+}
+
+.chatbox {
+  background-color: #edf0f5;
+}
+
+/* member list */
+.profile-wrapper {
+  margin-top: 97px;
+  position: relative;
+  text-align: center;
+}
+
+.profile-name {
+  margin-top: 32px;
+}
+
+.profile-name-label {
+  font-size: 26px;
+}
+
+.name-card-wrapper {
+  margin: auto;
+}
