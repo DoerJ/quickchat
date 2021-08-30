@@ -11,7 +11,7 @@
   padding-top: 219px;
   z-index: 1000;
   height: 100%;
-  position: absolute;
+  position: fixed;
   width: 246px;
   border: 1px solid #dcdee6;
   border-width: 0 1px 0 0;
@@ -113,7 +113,7 @@ button.name-dialog-btn:hover {
   background-color: #edf0f5;
 }
 
-/* member list */
+/* profile section */
 .profile-wrapper {
   margin-top: 97px;
   position: relative;
@@ -128,6 +128,37 @@ button.name-dialog-btn:hover {
   font-size: 26px;
 }
 
-.name-card-wrapper {
+.name-card-wrapper.lg {
   margin: auto;
+}
+
+/* member-list */
+.member-list-wrapper {
+  margin-top: 187px;
+}
+
+.member-list-title {
+  margin-left: 28px;
+}
+
+.member-list-title-label {
+  color: #9ea5b2;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.room-member-list-item {
+  display: flex;
+  min-height: 101px;
+  align-items: center;
+  padding-left: 28px;
+}
+
+.room-member-list-item-info {
+  margin-left: 40px;
+  font-size: 19px;
+}
+
+.member-list-items-wrapper {
+  margin-top: 34px;
 }

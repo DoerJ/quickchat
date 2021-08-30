@@ -8,6 +8,7 @@ import { Modal } from '../modal';
 import { AccountCircle } from '@material-ui/icons';
 import { UserModel, ClientSocket, RoomModel, Menu } from '../../../script-model';
 import { generateNameCard } from '../../ui/name-card';
+import { DateTimeService } from '../../utils/datetime';
 
 interface ChatroomStates {
   roomToken: string,
@@ -111,11 +112,11 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
   broadcastJoinEvent = (): void => {
     // broadcast join event only if it's the first-time join
     if (!Menu.roomsOnList.get(this.state.roomToken)) {
-      console.log('join room')
       ClientSocket.roomJoinHandler({
         type: 'join-event',
         roomToken: this.state.roomToken,
-        name: this.state.nameOnDialog
+        name: this.state.nameOnDialog,
+        timestamp: DateTimeService.formatCurrentTimestamp()
       })
       // set the room as visited
       Menu.roomsOnList.set(this.state.roomToken, true);
@@ -231,6 +232,8 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
     return (
       <div className="content-wrapper col-layout">                                                                                                                                                                                                         
         <div className="member-list" style={{display:'inline-block', position:'relative', height:'100vh', width:'20%'}}>
+
+          {/* profile */}
           {this.state.nameLoaded && (
             <div className="profile-wrapper">
               {generateNameCard(this.state.nameOnDialog, 'lg')}
@@ -239,37 +242,58 @@ export class ChatroomComponent extends React.Component<any, ChatroomStates> {
               </div>
             </div>
           )}
-          {this.state.roomMemberList.map((name: string) => {
-            return (<div>{name}</div>);
-          })} 
+
+          {/* member list */}
+          {this.state.roomMemberList.length > 0 && (
+            <div className="member-list-wrapper">
+              <div className="member-list-title">
+                <span className="member-list-title-label">Room members</span>
+              </div>
+              <div className="member-list-items-wrapper">
+                {this.state.roomMemberList.map((name: string) => {
+                  return (
+                    <div className="room-member-list-item">
+                      {generateNameCard(name, 'sm')}
+                      <div className="room-member-list-item-info">
+                        <span className="room-member-name">{name}</span>
+                      </div>
+                    </div>
+                  );
+                })} 
+              </div>
+            </div>
+          )}
         </div>
         <div className="chatbox" style={{display:'inline-block', position:'absolute', height:'100%', width:'60%'}}>
-            <div className="chatbox-container" style={{height:'90vh'}}>
-              {this.state.historyMessageList.map((msgObj: any) => {
-
-                switch (msgObj.type) {
-                  case 'message':
-                    return (<div>{msgObj.member}: {msgObj.message}</div>);
-                  case 'join-event':
-                    return (<div>{msgObj.member === this.state.nameOnDialog ? 'You have' : msgObj.member + ' has'} joined the room.</div>);
-                  case 'leave-event':
-                    return (<div>{msgObj.member} has left the room.</div>);
-                  default:
-                    return (<div></div>);
-                }     
-              })}
-            </div>
-            <div className="chatbox-form-contaienr">
-              <Paper component="form" style={{width:'735px', marginLeft:'108px', display:'flex', alignItems:'center'}}>
-                <InputBase placeholder="Say something..." inputProps={{ 'aria-label': 'Say something...' }} style={{width:'85%'}} value={this.state.messageToSend} onChange={this.messageOnUpdate} />
-                <Divider orientation="vertical" style={{height:'25px'}} />
-                <IconButton color="primary" aria-label="directions" onClick={this.handleMessageSend}>
-                  <SendIcon />
-                </IconButton>
-              </Paper>
-            </div>
+          <div className="chatbox-container" style={{height:'90vh'}}>
+            {this.state.historyMessageList.map((msgObj: any) => {
+              switch (msgObj.type) {
+                case 'message':
+                  return (<div>{msgObj.member}: {msgObj.message}</div>);
+                case 'join-event':
+                  return (<div>{msgObj.member === this.state.nameOnDialog ? 'You have' : msgObj.member + ' has'} joined the room.</div>);
+                case 'leave-event':
+                  return (<div>{msgObj.member} has left the room.</div>);
+                default:
+                  return (<div></div>);
+              }     
+            })}
           </div>
+          <div className="chatbox-form-contaienr">
+            <Paper component="form" style={{width:'735px', marginLeft:'108px', display:'flex', alignItems:'center'}}>
+              <InputBase placeholder="Say something..." inputProps={{ 'aria-label': 'Say something...' }} style={{width:'85%'}} value={this.state.messageToSend} onChange={this.messageOnUpdate} />
+              <Divider orientation="vertical" style={{height:'25px'}} />
+              <IconButton color="primary" aria-label="directions" onClick={this.handleMessageSend}>
+                <SendIcon />
+              </IconButton>
+            </Paper>
+          </div>
+        </div>
+
+        {/* modal */}
         <Modal open={this.state.openAlertModal} response={this.state.response} onclose={this.modalOnClose} />
+        
+        {/* name dialog */}
         <Dialog className="name-dialog-wrapper" aria-labelledby="simple-dialog-title" open={this.state.openNameDialog}>
           <FormControl className="name-dialog">
             <TextField 

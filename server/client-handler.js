@@ -32,8 +32,6 @@ Client.prototype.addMemberNameForRoom = function(roomToken, name, cb) {
 }
 
 Client.prototype.getMemberNameForRoom = function(roomToken) {
-  console.log('room token: ', roomToken);
-  console.log('member names: ', this.memberNameForRooms)
   return this.memberNameForRooms.get(roomToken) || null;
 }
 

@@ -15,7 +15,9 @@ const styles: any = {
 
   },
   sm: {
-
+    width: '65px',
+    height: '65px',
+    fontSize: '28px'
   }
 }
 
@@ -29,11 +31,14 @@ export const generateNameCard = (name: string, size: string): any => {
     textAlign: 'center',
     borderRadius: '50%',
     backgroundColor: backdrop,
-    color: font
+    color: font,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 
   return (
-    <div className="name-card-wrapper" style={style}>
+    <div className={`name-card-wrapper ${size}`} style={style}>
       <span className="name-card-font">{name.charAt(0).toUpperCase()}</span>
     </div>
   );

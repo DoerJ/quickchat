@@ -19,7 +19,6 @@ module.exports = (socket, io) => {
   }
 
   var roomMessageHandler = (params) => {
-    console.log('params: ', params);
     // push message to chatroom history stack 
     ChatroomsHandler.retrieveRoom(params.roomToken).pushMessageToHistory({
       type: params.type,
@@ -39,7 +38,8 @@ module.exports = (socket, io) => {
     // push join event to chatroom history stack 
     ChatroomsHandler.retrieveRoom(params.roomToken).pushMessageToHistory({
       type: params.type,
-      member: params.name
+      member: params.name,
+      timestamp: params.timestamp
     });
     // broadcast join event to all the room members
     io.in(params.roomToken).emit('room-join', {
